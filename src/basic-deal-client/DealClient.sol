@@ -11,7 +11,7 @@ import {MarketCBOR} from "@filecoin/contracts/v0.8/cbor/MarketCbor.sol";
 import {BytesCBOR} from "@filecoin/contracts/v0.8/cbor/BytesCbor.sol";
 import {BigNumbers, BigNumber} from "@filecoin/lib/solidity-bignumber/src/BigNumbers.sol";
 import {BigInts} from "@filecoin/contracts/v0.8/utils/BigInts.sol";
-import {CBOR} from "solidity-cborutils/contracts/CBOR.sol";
+import {CBOR} from "@zondax/solidity-cborutils/contracts/CBOR.sol";
 import {Misc} from "@filecoin/contracts/v0.8/utils/Misc.sol";
 import {FilAddresses} from "@filecoin/contracts/v0.8/utils/FilAddresses.sol";
 

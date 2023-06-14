@@ -3,22 +3,26 @@ pragma solidity ^0.8.11;
 
 import "@forge-std/Script.sol";
 import "../src/basic-deal-client/DealClient.sol";
+import {DeployLite} from "lib/forge-deploy-lite/script/DeployLite.sol";
 
-contract MyScript is Script {
+contract MyScript is Script, DeployLite {
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        address deployer = vm.envAddress("ETH_FROM");
+        address deal_client = readAddress("DealClient");
+
         ExtraParamsV1 memory extraParamsV1 = ExtraParamsV1({
             location_ref: vm.envString("LOCATION_REF"),
             car_size: uint64(vm.envUint("CAR_SIZE")),
             skip_ipni_announce: false,
             remove_unsealed_copy: false
         });
+
         // Replace this with whatever you'd like
         DealRequest memory dealRequest = DealRequest({
-            piece_cid: vm.envBytes("PIECE_CID_BYTES"),
-            piece_size: uint64(vm.envUint("PIECE_SIZE")),
+            piece_cid: bytes(vm.envString("PIECE_CID_BYTES")),
+            piece_size: 32768, // uint64(vm.envUint("PIECE_SIZE")),
             verified_deal: false,
-            label: vm.envString("commP"),
+            label: vm.envString("LABEL"),
             start_epoch: 520000,
             end_epoch: 1555200,
             storage_price_per_epoch: 0,
@@ -27,16 +31,17 @@ contract MyScript is Script {
             extra_params_version: 1,
             extra_params: extraParamsV1
         });
-        vm.startBroadcast(deployerPrivateKey);
 
-        DealClient deal_client = new DealClient(); // Put valid address here
+        vm.startBroadcast(deployer);
 
-        deal_client.makeDealProposal(dealRequest);
+        bytes32 dealId = DealClient(deal_client).makeDealProposal(dealRequest);
 
         // Use the following to get your deal proposal from dealID
-        // uint256 dealID = vm.envUint("DEAL_ID"); // Pass the DEAL_ID in as an environment variable
-        // deal_client.getDealProposal(dealID);
+        // uint256 dealID = vm.envUint("DEAL_ID");
+        // DealClient(deal_client.getDealProposal(dealID));
 
         vm.stopBroadcast();
+
+        console.logBytes32(dealId);
     }
 }

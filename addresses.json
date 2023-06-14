@@ -1,0 +1,9 @@
+{
+  "314159": {
+    "chainName": "calibration",
+    "SimpleCoinV2": "0x34A1D3fff3958843C43aD80F30b94c510645C316",
+    "SimpleCoinV1": "0x10bdda29d9a84dC0E8C263B29734d4502a74BCF2",
+    "SimpleCoin": "0xb5c8CB0846317d82af2DbF90713716B01A2f680a",
+    "DealClient": "0x6CD3204B3C1CF737489C4BC2760bAAf2886f4dC1"
+  }
+}

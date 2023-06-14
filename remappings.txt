@@ -3,3 +3,5 @@
 @forge-std/=lib/forge-std/src/
 @oz/=lib/oz/contracts/
 @filecoin/=lib/filecoin-solidity
+@zondax/solidity-cborutils/=lib/filecoin-solidity/lib/solidity-cborutils
+@zondax/solidity-bignumber/=lib/filecoin-solidity/lib/solidity-bignumber
