@@ -3,17 +3,18 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "../basic-deal-client/DealClient.sol";
-import { MarketTypes } from "@zondax/filecoin-solidity/contracts/v0.8/types/MarketTypes.sol";
-import {MarketCBOR} from "@zondax/filecoin-solidity/contracts/v0.8/cbor/MarketCbor.sol";
+import {MarketTypes} from "@filecoin/contracts/v0.8/types/MarketTypes.sol";
+import {MarketCBOR} from "@filecoin/contracts/v0.8/cbor/MarketCbor.sol";
 
 contract MockMarket {
     function publish_deal(bytes memory raw_auth_params, address callee) public {
         // calls standard filecoin receiver on message authentication api method number
-        (bool success, ) = callee.call(abi.encodeWithSignature("handle_filecoin_method(uint64,uint64,bytes)", 0, 2643134072, raw_auth_params));
+        (bool success,) = callee.call(
+            abi.encodeWithSignature("handle_filecoin_method(uint64,uint64,bytes)", 0, 2643134072, raw_auth_params)
+        );
         require(success, "client contract failed to authorize deal publish");
     }
 }
-
 
 contract DealClientTest is Test {
     DealClient public client;
@@ -54,7 +55,6 @@ contract DealClientTest is Test {
         return request;
     }
 
-
     function testMakeDealProposal() public {
         require(client.dealsLength() == 0, "Expect no deals");
         client.makeDealProposal(createDealRequest());
@@ -73,9 +73,7 @@ contract DealClientTest is Test {
         require(!proposalIdSetShort.valid, "expected to have valid Proposal");
         ProviderSet memory providerSetShort = client.getProviderSet(testShortCID);
         require(!providerSetShort.valid, "should not be valid before a cid is authorized");
-
     }
-
 
     function testGetDealProposal() public {
         bytes32 requestId = client.makeDealProposal(createDealRequest());
@@ -83,14 +81,14 @@ contract DealClientTest is Test {
         bytes memory cborDealProposal = client.getDealProposal(requestId);
         MarketTypes.DealProposal memory dp = MarketCBOR.deserializeDealProposal(cborDealProposal);
         require(keccak256(testCID) == keccak256(dp.piece_cid.data));
-//        require(dp.provider == FilAddresses.fromActorID(0));
+        //        require(dp.provider == FilAddresses.fromActorID(0));
 
         // Expect a revert for an unknown proposal ID
         vm.expectRevert();
         client.getDealProposal(bytes32(0));
     }
 
-/*
+    /*
 
     function testMockMarket() public {
         client.addCID(testCID, 2048);
@@ -126,18 +124,18 @@ contract DealClientTest is Test {
 
     function testHandleFilecoinMethod() public {
         client.addCID(testCID, 2048);
-        // message auth params for a deal with this cid 
+        // message auth params for a deal with this cid
         bytes memory messageAuthParams = hex"8240584c8bd82a5828000181e2039220206b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b190800f4420068420066656c6162656c0a1a0008ca0a42000a42000a42000a";
         client.handle_filecoin_method(0, client.AUTHORIZE_MESSAGE_METHOD_NUM(), messageAuthParams);
 
-        // authorization should be added 
+        // authorization should be added
         require(client.cidProviders(testCID, testProvider), "test provider should be added");
     }
-}
+    }
 
 
 
-contract ParseCBORTest is Test {
+    contract ParseCBORTest is Test {
 
     function bytes_equal(bytes memory a, bytes memory b) pure public returns(bool) {
         return keccak256(a) == keccak256(b);
@@ -174,7 +172,7 @@ contract ParseCBORTest is Test {
         bytes memory thousand = hex"1903e8";
         bytes memory million = hex"1a000f4240";
         bytes memory maxint = hex"1bffffffffffffffff";
-        
+
 
         // negative
         bytes memory negativethousand = hex"3903e7";
@@ -226,7 +224,7 @@ contract ParseCBORTest is Test {
 
     function testCBORHeadersStrings() view public {
         // text string
-        bytes memory emptystring = hex"60"; 
+        bytes memory emptystring = hex"60";
         bytes memory charactera = hex"6161";
         bytes memory stringsayingietf = hex"6449455446";
 
@@ -245,17 +243,17 @@ contract ParseCBORTest is Test {
         (maj, extra, byteIdx) = this.parseCBORHeader(charactera, 0);
         assert(maj == MajTextString);
         assert(extra == 1);
-        assert(byteIdx == 1);        
+        assert(byteIdx == 1);
 
         (maj, extra, byteIdx) = this.parseCBORHeader(stringsayingietf, 0);
         assert(maj == MajTextString);
         assert(extra == 4);
-        assert(byteIdx == 1);        
+        assert(byteIdx == 1);
 
         (maj, extra, byteIdx) = this.parseCBORHeader(bytessayingietf, 0);
         assert(maj == MajByteString);
         assert(extra == 25);
-        assert(byteIdx == 2);     
+        assert(byteIdx == 2);
 
     }
 
@@ -264,9 +262,9 @@ contract ParseCBORTest is Test {
         bytes memory infinity = hex"f97c00"; // (Maj7, 31744, 3)
         bytes memory boolfalse = hex"f4"; // (Maj7, 20, 1)
         bytes memory big = hex"c249010000000000000000"; //tagged big int 18446744073709551616 (Maj6, 2, 1)
-        // data structs 
+        // data structs
         bytes memory emptyarray = hex"80";
-        bytes memory emptymap = hex"a0"; 
+        bytes memory emptymap = hex"a0";
         bytes memory bigmap = hex"a56161614161626142616361436164614461656145"; //{"a": "A", "b": "B", "c": "C", "d": "D", "e": "E"}
         bytes memory bigarray = hex"981A000102030405060708090a0b0c0d0e0f101112131415161718181819"; // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
 
@@ -292,12 +290,12 @@ contract ParseCBORTest is Test {
         (maj, extra, byteIdx) = this.parseCBORHeader(emptyarray, 0);
         assert(maj == MajArray);
         assert(extra == 0);
-        assert(byteIdx == 1);        
+        assert(byteIdx == 1);
 
         (maj, extra, byteIdx) = this.parseCBORHeader(emptymap, 0);
         assert(maj == MajMap);
         assert(extra == 0);
-        assert(byteIdx == 1);        
+        assert(byteIdx == 1);
 
         (maj, extra, byteIdx) = this.parseCBORHeader(bigmap, 0);
         assert(maj == MajMap);

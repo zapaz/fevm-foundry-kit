@@ -22,7 +22,7 @@ contract MyScript is Script {
 
         balance = coin.getBalance(yourAddress);
         console.log("Your new balance is: ", balance);
-        
+
         vm.stopBroadcast();
     }
 }

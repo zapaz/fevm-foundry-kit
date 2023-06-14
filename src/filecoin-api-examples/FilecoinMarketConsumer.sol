@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {MarketAPI} from "@zondax/filecoin-solidity/contracts/v0.8/MarketAPI.sol";
-import {MarketTypes} from "@zondax/filecoin-solidity/contracts/v0.8/types/MarketTypes.sol";
-import {CommonTypes} from "@zondax/filecoin-solidity/contracts/v0.8/types/CommonTypes.sol";
+import {MarketAPI} from "@filecoin/contracts/v0.8/MarketAPI.sol";
+import {MarketTypes} from "@filecoin/contracts/v0.8/types/MarketTypes.sol";
+import {CommonTypes} from "@filecoin/contracts/v0.8/types/CommonTypes.sol";
 
 contract FilecoinMarketConsumer {
     CommonTypes.DealLabel public dealLabel;
@@ -13,7 +13,7 @@ contract FilecoinMarketConsumer {
     MarketTypes.GetDealDataCommitmentReturn public dealCommitment;
     MarketTypes.GetDealTermReturn public dealTerm;
     CommonTypes.BigInt public dealPricePerEpoch;
-    CommonTypes.BigInt public clientCollateral; 
+    CommonTypes.BigInt public clientCollateral;
     CommonTypes.BigInt public providerCollateral;
     MarketTypes.GetDealActivationReturn public activationStatus;
 
@@ -28,9 +28,9 @@ contract FilecoinMarketConsumer {
         storeProviderCollateral(dealId);
         storeDealVerificaton(dealId);
         storeDealActivationStatus(dealId);
-    } 
+    }
 
-    function storeDealLabel(uint64 dealId) public  {
+    function storeDealLabel(uint64 dealId) public {
         dealLabel = MarketAPI.getDealLabel(dealId);
     }
 
@@ -51,13 +51,13 @@ contract FilecoinMarketConsumer {
     }
 
     function storeDealTotalPrice(uint64 dealId) public {
-       dealPricePerEpoch = MarketAPI.getDealTotalPrice(dealId);
+        dealPricePerEpoch = MarketAPI.getDealTotalPrice(dealId);
     }
 
     function storeClientCollateral(uint64 dealId) public {
         clientCollateral = MarketAPI.getDealClientCollateral(dealId);
     }
-    
+
     function storeProviderCollateral(uint64 dealId) public {
         providerCollateral = MarketAPI.getDealProviderCollateral(dealId);
     }
